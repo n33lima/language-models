@@ -5,13 +5,13 @@ import seaborn as sns
 import keras
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
-from keras.models import Model
-from keras.layers import LSTM, Activation, Dense, Dropout, Input, Embedding
-from keras.optimizers import RMSprop
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing import sequence
-from keras.utils import to_categorical
-from keras.callbacks import EarlyStopping
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import LSTM, Activation, Dense, Dropout, Input, Embedding
+from tensorflow.keras.optimizers import RMSprop
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing import sequence
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.callbacks import EarlyStopping
 
 df = pd.read_csv('./data/train.csv')
 print(df.head())
