@@ -27,11 +27,11 @@ le = LabelEncoder()
 y = le.fit_transform(y)
 y = y.reshape(-1,1)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.15)
-max_words = 10000
+max_words = 5000
 max_len = 200
 tok = Tokenizer(num_words=max_words)
-tok.fit_on_texts(X)
-sequences = tok.texts_to_sequences(X)
+tok.fit_on_texts(X_train)
+sequences = tok.texts_to_sequences(X_train)
 sequences_matrix = sequence.pad_sequences(sequences,maxlen=max_len)
 
 ''' Defining all the layers in an RNN'''
@@ -43,17 +43,17 @@ def RNN():
     layer = Activation('relu')(layer)
     layer = Dropout(0.5)(layer)
     layer = Dense(1,name='out_layer')(layer)
-    layer = Activation('sigmoid')(layer)
+    layer = Activation('relu')(layer)
     model = Model(inputs=inputs,outputs=layer)
     return model
 
 model = RNN()
 model.summary()
-model.compile(loss='binary_crossentropy',optimizer=RMSprop(),metrics=['accuracy'])
+model.compile(loss='BinaryCrossentropy',optimizer='RMSprop',metrics=['accuracy'])
 
 
-model.fit(sequences_matrix,y,batch_size=128,epochs=10,
-          callbacks=[EarlyStopping(monitor='loss',min_delta=0.0001)])
+history = model.fit(sequences_matrix,y_train,batch_size=128,epochs=40)
+          #callbacks=[EarlyStopping(monitor='loss',min_delta=0.0001)])
 
 
 test_sequences = tok.texts_to_sequences(X_test)
@@ -61,3 +61,23 @@ test_sequences_matrix = sequence.pad_sequences(test_sequences,maxlen=max_len)
 
 acc = model.evaluate(test_sequences_matrix, y_test)
 print("loss : %.2f,  acc : %.2f" %(acc[0], acc[1]))
+
+print(history.history.keys())
+
+
+plt.plot(history.history['accuracy'])
+
+plt.title('model accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
+
+
+plt.plot(history.history['loss'])
+
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
